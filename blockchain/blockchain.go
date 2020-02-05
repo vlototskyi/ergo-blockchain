@@ -32,7 +32,7 @@ func DBexists() bool {
 	return true
 }
 
-func InitBlockChain() *BlockChain {
+func InitBlockChain(address string) *BlockChain {
 	var lastHash []byte
 
 	if DBexists() {
@@ -82,7 +82,7 @@ func ContinueBlockChain(address string) *BlockChain {
 	Handle(err)
 
 	err = db.Update(func(txn *badger.Txn) error {
-		itm, err := txn.Get([]byte("lh"))
+		item, err := txn.Get([]byte("lh"))
 		Handle(err)
 		err = item.Value(func(val []byte) error {
 			lastHash = append([]byte{}, val...)
@@ -194,7 +194,7 @@ func (chain *BlockChain) FindUnspentTransactions(address string) []Transaction {
 		}
 
 		if len(block.PrevHash) == 0 {
-			brek
+			break
 		}
 	}
 	return unspentTxs
