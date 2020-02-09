@@ -26,7 +26,7 @@ const (
 
 var (
 	nodeAddress     string
-	minerAddress    string
+	mineAddress     string
 	KnownNodes      = []string{"localhost:3000"}
 	blocksInTransit = [][]byte{}
 	memoryPool      = make(map[string]blockchain.Transaction)
@@ -333,7 +333,7 @@ func HandleTx(request []byte, chain *blockchain.BlockChain) {
 			}
 		}
 	} else {
-		if len(memoryPool) >= 2 && len(minerAddress) > 0 {
+		if len(memoryPool) >= 2 && len(mineAddress) > 0 {
 			MineTx(chain)
 		}
 	}
@@ -355,7 +355,7 @@ func MineTx(chain *blockchain.BlockChain) {
 		return
 	}
 
-	cbTx := blockchain.CoinbaseTx(minerAddress, "")
+	cbTx := blockchain.CoinbaseTx(mineAddress, "")
 	txs = append(txs, cbTx)
 
 	newBlock := chain.MineBlock(txs)
@@ -438,7 +438,7 @@ func HandleConnection(conn net.Conn, chain *blockchain.BlockChain) {
 
 func StartServer(nodeID, minerAddress string) {
 	nodeAddress = fmt.Sprintf("localhost:%s", nodeID)
-	minerAddress = minerAddress
+	mineAddress = minerAddress
 	ln, err := net.Listen(protocol, nodeAddress)
 	if err != nil {
 		log.Panic(err)
